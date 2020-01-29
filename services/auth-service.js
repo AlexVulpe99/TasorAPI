@@ -93,13 +93,21 @@ db.initialize(collectionName, function(dbCollection) { // successCallback
     });
 
     router.get("/users", (request, response) => {
+        //verify jwt
         dbCollection.find().project({ _id: 1 }).toArray((error, result) => {
             if (error) throw error;
-            response.status(200).json({
-                success: true,
-                data: result
-            })
-        })
+            if (result == null) {
+                response.status(404).json({
+                    success: false,
+                    message: 'Users not found!'
+                });
+            } else {
+                response.status(200).json({
+                    success: true,
+                    data: result
+                });
+            }
+        });
     });
 
 }, function(err) {

@@ -9,6 +9,7 @@ const helperFunctions = require("../helpers/helper-functions");
 
 db.initialize(collectionName, function(dbCollection) {
     router.post("/", (request, response) => {
+        //verify jwt
         let item = request.body;
         item._id = helperFunctions.generateRandomId();
 
@@ -28,6 +29,7 @@ db.initialize(collectionName, function(dbCollection) {
     });
 
     router.get("/:email", (request, response) => {
+        //verify jwt
         const emailUser = request.params.email;
 
         dbCollection.find({ email: emailUser }).toArray((error, result) => {
@@ -46,6 +48,7 @@ db.initialize(collectionName, function(dbCollection) {
     });
 
     router.put("/:idTask", (request, response) => {
+        //verify jwt
         const idTask = request.params.idTask;
         const item = request.body;
 
@@ -64,6 +67,7 @@ db.initialize(collectionName, function(dbCollection) {
     });
 
     router.delete("/:idTask", (request, response) => {
+        //verify jwt
         const idTask = request.params.idTask;
 
         dbCollection.deleteOne({ _id: idTask }, function(error, result) {
@@ -80,7 +84,8 @@ db.initialize(collectionName, function(dbCollection) {
         });
     });
 
-    router.get("/:idTask", (request, response) => {
+    router.get("task/:idTask", (request, response) => {
+        //verify jwt
         const idTask = request.params.idTask;
 
         dbCollection.findOne({ _id: idTask }, (error, result) => {
