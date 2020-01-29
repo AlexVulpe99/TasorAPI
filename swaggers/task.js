@@ -40,6 +40,8 @@
  *               type: string
  *       '400':
  *         description: Bad request
+ *       '403':
+ *         description: User is not authentificated
  */
 
 // ================================================ GET TASKS FOR ONE USER ==============================================
@@ -79,6 +81,8 @@
  *                 type: object
  *       '400':
  *         description: Bad request
+ *       '403':
+ *         description: User is not authentificated
  */
 
 // ================================================ UPDATE A SPECIFIC TASK ==============================================
@@ -114,6 +118,8 @@
  *               type: boolean
  *       '400':
  *         description: Bad request
+ *       '403':
+ *         description: User is not authentificated
  */
 
 
@@ -150,6 +156,8 @@
  *               type: boolean
  *       '400':
  *         description: Bad request
+ *       '403':
+ *         description: User is not authentificated
  */
 
 // ================================================ GET INFORMATIONS OF A SINGLE TASK ==============================================
@@ -187,4 +195,6 @@
  *               type: object
  *       '400':
  *         description: Bad request
+ *       '403':
+ *         description: User is not authentificated
  */

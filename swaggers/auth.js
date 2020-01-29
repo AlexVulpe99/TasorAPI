@@ -1,7 +1,7 @@
 // ================================================ REGISTER ==============================================
 /**
  * @swagger
- * /register:
+ * /auth/register:
  *   post:
  *     tags:
  *       - Users
@@ -47,7 +47,7 @@
 
 /**
  * @swagger
- * /login:
+ * /auth/login:
  *   post:
  *     tags:
  *       - Users
@@ -94,7 +94,7 @@
 
 /**
  * @swagger
- * /users:
+ * /auth/users:
  *   get:
  *     tags:
  *       - Users
@@ -122,5 +122,5 @@
  *       '401':
  *         description: No auth token / no user found in db with that name
  *       '403':
- *         description: JWT token and username from client don't match
+ *         description: User is not authentificated
  */

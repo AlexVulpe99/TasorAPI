@@ -16,6 +16,12 @@ server.use(body_parser.urlencoded({
 
 server.use(cors());
 
+server.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*");
+    next();
+});
+
 let port = process.env.PORT;
 if (port == null || port == "") {
     port = 4000;
@@ -50,14 +56,18 @@ server.get("/swagger.json", (request, response) => {
     response.send(swaggerSpec);
 });
 
-server.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 // << services >>
 const authService = require("./services/auth-service");
-server.use("/", authService.router);
+server.use("/auth", authService.router);
 
 const taskService = require("./services/task-service");
 server.use("/tasks", taskService.router);
+
+const statisticsService = require("./services/statistics-service");
+server.use("/statistics", statisticsService.router);
 
 server.listen(port, () => {
     console.log(`Server listening at ${port}`);

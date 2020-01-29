@@ -12,18 +12,8 @@ function hashPassword(password) {
 
 function generateJWT(userId) {
     return jwt.sign({
-        userId: userId
+        email: userId
     }, config.secret, { expiresIn: '2h' });
-}
-
-function verifyJWT(token) {
-    jwt.verify(token, config.secret, function(err, decoded) {
-        if (err) {
-            return false;
-        } else {
-            return decoded.userId;
-        }
-    })
 }
 
 // << db setup >>
@@ -32,6 +22,7 @@ const collectionName = "users";
 
 const express = require("express");
 const router = express.Router();
+router.use(require("body-parser").json())
 
 
 db.initialize(collectionName, function(dbCollection) { // successCallback
@@ -61,6 +52,7 @@ db.initialize(collectionName, function(dbCollection) { // successCallback
     router.post("/login", (request, response) => {
         const item = request.body;
         //hash the password
+        //console.log(item);
         item.password = hashPassword(item.password);
 
         dbCollection.findOne({ _id: item.email }, (error, result) => {
@@ -94,20 +86,36 @@ db.initialize(collectionName, function(dbCollection) { // successCallback
 
     router.get("/users", (request, response) => {
         //verify jwt
-        dbCollection.find().project({ _id: 1 }).toArray((error, result) => {
-            if (error) throw error;
-            if (result == null) {
-                response.status(404).json({
-                    success: false,
-                    message: 'Users not found!'
-                });
-            } else {
-                response.status(200).json({
-                    success: true,
-                    data: result
-                });
-            }
-        });
+        let token = request.headers['x-access-token'] || request.headers['authorization']; // Express headers are auto converted to lowercase
+        if (token.startsWith('Bearer ')) {
+            // Remove Bearer from string
+            token = token.slice(7, token.length);
+        }
+        if (token) {
+            jwt.verify(token, config.secret, function(err, decoded) {
+                if (err) {
+                    response.status(403).json({
+                        success: false,
+                        message: 'User is not authentificated'
+                    });
+                } else {
+                    dbCollection.find().project({ _id: 1 }).toArray((error, result) => {
+                        if (error) throw error;
+                        if (result == null) {
+                            response.status(404).json({
+                                success: false,
+                                message: 'Users not found!'
+                            });
+                        } else {
+                            response.status(200).json({
+                                success: true,
+                                data: result
+                            });
+                        }
+                    });
+                }
+            });
+        }
     });
 
 }, function(err) {
@@ -116,7 +124,4 @@ db.initialize(collectionName, function(dbCollection) { // successCallback
 
 
 
-module.exports = {
-    router,
-    verifyJWT
-};
+module.exports = { router }
